@@ -33,25 +33,21 @@ public class UF {
         if (rootp == rootq) {
             return;
         }
-        if (p > q) {
-            lg[q] = p;
-        } else {
-            lg[p] = q;
-        }
+        int lgQ = lg[rootq];
+        int lgP = lg[rootp];
         if (sz[rootp] < sz[rootq]) {
             id[rootp] = rootq;
             sz[rootq] += sz[rootp];
+            lg[rootq] = Math.max(lgQ, lgP);
         } else {
             id[rootq] = rootp;
             sz[rootp] += sz[rootq];
+            lg[rootp] = Math.max(lgQ, lgP);
         }
     }
 
     public int find(int i) {
-        while (i != lg[i]) {
-            i = lg[lg[i]];
-        }
-        return i;
+        return lg[root(i)];
     }
 
     public boolean connected(int p, int q) {
