@@ -3,15 +3,18 @@ package unionfind;
 import java.util.Arrays;
 
 public class UF {
+    private int[] lg;
     private int[] sz;
     private int[] id;
 
     public UF(int length) {
         sz = new int[length];
         id = new int[length];
+        lg = new int[length];
         for (var i = 0; i < length; i++) {
             id[i] = i;
             sz[i] = 1;
+            lg[i] = i;
         }
     }
 
@@ -30,6 +33,11 @@ public class UF {
         if (rootp == rootq) {
             return;
         }
+        if (p > q) {
+            lg[q] = p;
+        } else {
+            lg[p] = q;
+        }
         if (sz[rootp] < sz[rootq]) {
             id[rootp] = rootq;
             sz[rootq] += sz[rootp];
@@ -37,6 +45,13 @@ public class UF {
             id[rootq] = rootp;
             sz[rootp] += sz[rootq];
         }
+    }
+
+    public int find(int i) {
+        while (i != lg[i]) {
+            i = lg[lg[i]];
+        }
+        return i;
     }
 
     public boolean connected(int p, int q) {
