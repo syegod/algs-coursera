@@ -1,7 +1,6 @@
-package unionfind.percolation;
+package module1.percolation;
 
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
-import unionfind.UF;
 
 import java.util.Arrays;
 

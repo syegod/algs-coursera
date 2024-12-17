@@ -1,4 +1,4 @@
-package unionfind;
+package module1;
 
 import org.junit.jupiter.api.Test;
 

@@ -1,8 +1,6 @@
-package unionfind.percolation;
+package module1.percolation;
 
 import edu.princeton.cs.algs4.StdRandom;
-
-import java.util.Arrays;
 
 public class PercolationStats {
     private int[] allSims;
