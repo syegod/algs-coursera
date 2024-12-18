@@ -49,7 +49,14 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         if (isEmpty()) {
             throw new NoSuchElementException();
         }
-        int randomIndex = StdRandom.uniformInt(0, size);
+        if (size == 1) {
+            size--;
+            Item value = first.value;
+            first = null;
+            last = null;
+            return value;
+        }
+        int randomIndex = StdRandom.uniformInt(1, size);
         size--;
         if (randomIndex == 0) {
             Item value = first.value;
@@ -58,17 +65,26 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
                 last = null;
             } else {
                 first = first.next;
+                first.prev = null;
             }
             return value;
         }
         int count = 1;
-        var node = first;
+        var node = first.next;
         while (count < randomIndex) {
             node = node.next;
             count++;
         }
         Item value = node.value;
-        node.next = node.prev;
+
+        if (node == last) {
+            last = last.prev;
+            last.next = null;
+        } else {
+            node.prev.next = node.next;
+            node.next.prev = node.prev;
+        }
+
         return value;
     }
 
@@ -98,20 +114,14 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     // unit testing (required)
 
     public static void main(String[] args) {
-        var q = new RandomizedQueue<>();
-        q.enqueue(1);
-        q.enqueue(2);
-        q.enqueue(3);
-        q.enqueue(4);
-        q.enqueue(5);
-        q.enqueue(6);
-//        System.out.println(q.size());
-//        System.out.println(q.dequeue());
-//        System.out.println(q.size());
-//        System.out.println(q.sample());
-//        System.out.println(q.isEmpty());
-
-        for (var i : q) {
+        var queue = new RandomizedQueue<>();
+        queue.enqueue(733);
+        queue.enqueue(185);
+        queue.enqueue(129);
+        queue.enqueue(79);
+        queue.enqueue(250);
+        queue.dequeue();
+        for (var i : queue) {
             System.out.println(i);
         }
 
