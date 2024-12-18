@@ -1,11 +1,10 @@
-package module4;
+package module3;
 
 // A randomized queue is similar to a stack or queue, except that the
 // item removed is chosen uniformly at random among items in the data structure.
 
 import edu.princeton.cs.algs4.StdRandom;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 

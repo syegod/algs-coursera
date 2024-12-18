@@ -1,4 +1,4 @@
-package module4;
+package module3;
 
 public class StackMax<E extends Comparable<E>> {
     private static final int INITIAL_CAPACITY = 16;
