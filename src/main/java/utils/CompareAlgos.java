@@ -1,9 +1,11 @@
+package utils;
+
 import edu.princeton.cs.algs4.Stopwatch;
 import module4.InsertionSort;
 import module5.MergeSort;
 import module6.QuickSort;
 
-import java.util.Random;
+import static utils.Utils.genArray;
 
 public class CompareAlgos {
     public static void main(String[] args) {
@@ -35,14 +37,5 @@ public class CompareAlgos {
         Stopwatch start = new Stopwatch();
         QuickSort.quicksort(arr);
         System.out.println("Quicksort: " + arr.length + " items elapsed time: " + start.elapsedTime());
-    }
-
-    private static int[] genArray(int n) {
-        Random rand = new Random();
-        int[] arr = new int[n];
-        for (int i = 0; i < n; i++) {
-            arr[i] = rand.nextInt(0, n * 2);
-        }
-        return arr;
     }
 }

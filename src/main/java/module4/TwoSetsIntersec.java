@@ -5,12 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class TwoSetsIntersec {
-    public static void main(String[] args) {
-        int[] arr1 = {1, 2, 3, 4, 5};
-        int[] arr2 = {3, 4, 5, 6, 7};
-        System.out.println(intersectionWithSets(arr1, arr2));
-        System.out.println(intersection(arr1, arr2));
-    }
 
     public static int intersectionWithSets(int[] a, int[] b) {
         Set<Integer> ints1 = new HashSet<>();
