@@ -13,7 +13,7 @@ class RankOfKeyTest {
         int expected = 6;
         int key = 5;
 
-        assertEquals(expected, RankOfKey.findRank(a, b, key));
+        assertEquals(expected, RankOfKey.findKeyRank(a, b, key));
     }
 
 }
