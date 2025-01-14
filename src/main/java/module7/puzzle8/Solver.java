@@ -1,29 +1,29 @@
 package module7.puzzle8;
 
-import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.StdOut;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
 
 public class Solver {
 
     private Board initial;
-    private MinPQ<ConfigNode> pq;
     private ConfigNode solutionNode;
-    private final boolean isSolvable;
-    private final boolean isSolvableCalculated;
+    private boolean isSolvable;
 
     // find a solution to the initial board (using the A* algorithm)
     public Solver(Board initial) {
+        if (initial == null) {
+            throw new IllegalArgumentException();
+        }
         this.initial = initial;
         this.isSolvable = isSolvable();
-        this.isSolvableCalculated = true;
         if (isSolvable) {
+
             int moves = 0;
-            pq = new MinPQ<>((a, b) -> a.priority - b.priority);
+            MinPQ<ConfigNode> pq = new MinPQ<>((a, b) -> a.priority - b.priority);
             ConfigNode initialNode = new ConfigNode(initial, moves, initial.manhattan(), null);
             pq.insert(initialNode);
 
@@ -49,16 +49,31 @@ public class Solver {
     }
 
 
-    // is the initial board solvable? (see below)
     public boolean isSolvable() {
-        if (isSolvableCalculated) {
-            return this.isSolvable;
+        if (this.initial.isGoal()) {
+            return true;
         }
+        return isSolvableHelper(this.initial);
+    }
+
+    private boolean isSolvableHelper(Board board) {
+        // Parse the string representation of the puzzle
+        String puzzleString = board.toString();
+        String[] lines = puzzleString.split("\n");
+
+        int dimension = Integer.parseInt(lines[0].trim());
+
         ArrayList<Integer> tiles = new ArrayList<>();
-        for (int i = 0; i < initial.tiles.length; i++) {
-            for (int j = 0; j < initial.tiles[i].length; j++) {
-                if (initial.tiles[i][j] != 0) {
-                    tiles.add(initial.tiles[i][j]);
+        int blankRow = 0;
+
+        for (int i = 1; i < lines.length; i++) {
+            String[] numbers = lines[i].trim().split("\\s+");
+            for (int j = 0; j < numbers.length; j++) {
+                int value = Integer.parseInt(numbers[j]);
+                if (value == 0) {
+                    blankRow = i - 1;
+                } else {
+                    tiles.add(value);
                 }
             }
         }
@@ -71,24 +86,42 @@ public class Solver {
                 }
             }
         }
-        return inversions % 2 == 0;
+
+        if (dimension % 2 != 0) {
+            return inversions % 2 == 0;
+        } else {
+
+            if ((dimension - blankRow) % 2 == 0) {
+                return inversions % 2 != 0;
+            } else {
+                return inversions % 2 == 0;
+            }
+        }
     }
+
+
 
     // min number of moves to solve initial board; -1 if unsolvable
     public int moves() {
+        if (solutionNode == null) {
+            return -1;
+        }
         return solutionNode.moves;
     }
 
-    // sequence of boards in a shortest solution; null if unsolvable
+    // sequence of boards in the shortest solution; null if unsolvable
     public Iterable<Board> solution() {
-        List<Board> boards = new ArrayList<>();
+        if (solutionNode == null) {
+            return null;
+        }
+        var boards = new ArrayDeque<Board>();
         ConfigNode node = this.solutionNode;
         while (node.previous != null) {
-            boards.add(node.board);
+            boards.addFirst(node.board);
             node = node.previous;
         }
-        boards.add(initial);
-        return boards.reversed();
+        boards.addFirst(initial);
+        return boards;
     }
 
     private static class ConfigNode {
@@ -114,15 +147,12 @@ public class Solver {
 //        for (int i = 0; i < n; i++)
 //            for (int j = 0; j < n; j++)
 //                tiles[i][j] = in.readInt();
-//        Board initial = new Board(tiles);
 
-        int[][] arr = new int[][]{{8, 1, 3}, {4, 0, 2}, {7, 6, 5}};
-        Board initial = new Board(arr);
+        int[][] tiles = new int[][]{{1, 0}, {3, 2}};
+        Board initial = new Board(tiles);
 
         // solve the puzzle
         Solver solver = new Solver(initial);
-
-        // print solution to standard output
         if (!solver.isSolvable())
             StdOut.println("No solution possible");
         else {
