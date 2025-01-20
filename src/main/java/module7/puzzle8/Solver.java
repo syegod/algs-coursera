@@ -148,7 +148,7 @@ public class Solver {
 //            for (int j = 0; j < n; j++)
 //                tiles[i][j] = in.readInt();
 
-        int[][] tiles = new int[][]{{1, 0}, {3, 2}};
+        int[][] tiles = new int[][]{{8,1,3},{4,0,2},{7,6,5}};
         Board initial = new Board(tiles);
 
         // solve the puzzle
