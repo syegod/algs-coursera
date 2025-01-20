@@ -6,26 +6,28 @@ import java.util.List;
 
 public class Board {
 
-    public int[][] tiles;
-    private int[][] goalBoard;
+    private int[][] tiles;
 
     public Board(int[][] tiles) {
-        this.tiles = tiles;
+        this.tiles = new int[tiles.length][tiles.length];
+        for (int i = 0; i < this.tiles.length; i++) {
+            this.tiles[i] = Arrays.copyOf(tiles[i], tiles[i].length);
+        }
         createGoalBoard(dimension());
     }
 
     // string representation of this board
     public String toString() {
-        StringBuilder sb = new StringBuilder("3\n");
+        StringBuilder sb = new StringBuilder(dimension()+"\n");
         for (var i : tiles) {
-            sb.append("[");
             for (int j = 0; j < i.length; j++) {
-                sb.append(i[j]);
-                if (j < i.length - 1) {
-                    sb.append(",");
+                if (String.valueOf(i[j]).length() == 1) {
+                    sb.append(" " + i[j] + " ");
+                } else {
+                    sb.append(i[j] + " ");
                 }
             }
-            sb.append("]\n");
+            sb.append("\n");
         }
         return sb.toString();
     }
@@ -74,7 +76,7 @@ public class Board {
         return manhattan;
     }
 
-    private void createGoalBoard(int n) {
+    private int[][] createGoalBoard(int n) {
         int[][] arr = new int[n][n];
         arr[n - 1][n - 1] = 0;
         int currNum = 1;
@@ -86,14 +88,15 @@ public class Board {
                 arr[i][j] = currNum++;
             }
         }
-        this.goalBoard = arr;
+        return arr;
     }
 
     // is this board the goal board?
     public boolean isGoal() {
+        int[][] goalBoard = createGoalBoard(this.dimension());
         for (int row = 0; row < tiles.length; row++) {
             for (int col = 0; col < tiles[row].length; col++) {
-                if (tiles[row][col] != this.goalBoard[row][col]) {
+                if (tiles[row][col] != goalBoard[row][col]) {
                     return false;
                 }
             }
@@ -104,9 +107,10 @@ public class Board {
 
     // does this board equal y?
     public boolean equals(Object y) {
-        if (!(y instanceof Board board)) {
+        if (y == null || !y.getClass().getSimpleName().equals(this.getClass().getSimpleName())) {
             return false;
         }
+        var board = (Board) y;
         var arr = board.tiles;
         if (arr.length != tiles.length) {
             return false;
@@ -186,7 +190,36 @@ public class Board {
 
     // a board that is obtained by exchanging any pair of tiles
     public Board twin() {
-        return null;
+        // Create a deep copy of the current board
+        int[][] twinTiles = deepCopy(tiles);
+
+        // Find the first two non-zero tiles and swap them
+        int firstRow = -1, firstCol = -1, secondRow = -1, secondCol = -1;
+
+        // Loop through the tiles to find the first two non-zero tiles
+        for (int i = 0; i < tiles.length; i++) {
+            for (int j = 0; j < tiles[i].length; j++) {
+                if (twinTiles[i][j] != 0) {
+                    if (firstRow == -1) {
+                        // Found the first non-zero tile
+                        firstRow = i;
+                        firstCol = j;
+                    } else if (secondRow == -1) {
+                        // Found the second non-zero tile
+                        secondRow = i;
+                        secondCol = j;
+                        // Perform the swap
+                        int temp = twinTiles[firstRow][firstCol];
+                        twinTiles[firstRow][firstCol] = twinTiles[secondRow][secondCol];
+                        twinTiles[secondRow][secondCol] = temp;
+                        return new Board(twinTiles);  // Return the new board with the swapped tiles
+                    }
+                }
+            }
+        }
+
+        // If no swap is found (which shouldn't happen), return the original board
+        return new Board(twinTiles);
     }
 
     // unit testing (not graded)
